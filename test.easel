@@ -1,2 +1,2 @@
-[4 + 21]
-2006 / 4012 + 2
+ink("Hello, world!")
+ink(round(random(0,100)))

@@ -1,6 +1,14 @@
 import Ast from './ast.js'
 import {EaselError} from './stdlib.js'
 
+Array.prototype.add = function (args) {
+    this.push(...args)
+}
+
+Array.prototype.get = function ([index]) {
+    return this[index]
+}
+
 export class ReturnException extends Error {
     constructor(value) {
         super()

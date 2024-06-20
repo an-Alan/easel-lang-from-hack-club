@@ -1,0 +1,86 @@
+prepare rows as 64
+prepare cols as 64
+
+brush Cell has { x, y, live }
+
+sketch seed {
+    prepare cells as []
+    loop x through (0, rows) {
+        loop y through (0, cols) {
+            prepare live as false
+            prepare chance as random(0, 100)
+            if (chance < 10) {
+                prepare live as true
+            }
+            cells.add(prep Cell(x: x, y: y, live: live))
+        }
+    }
+    finished cells
+}
+
+prepare cells as seed()
+
+sketch getNeighbors needs (cells, index) {
+    prepare neighbors as []
+
+    if (index - rows - 1 > 0) {
+        neighbors.add(cells[index - rows - 1])
+    }
+    if (index - rows> 0) {
+        neighbors.add(cells[index - rows])
+    }
+    if (index - rows + 1 > 0) {
+        neighbors.add(cells[index - rows + 1])
+    }
+    if (index > 0) {
+        neighbors.add(cells[index - 1])
+    }
+    if (index < cells.length - 1) {
+        neighbors.add(cells[index + 1])
+    }
+    if (index + rows - 1< cells.length - 1) {
+        neighbors.add(cells[index + rows - 1])
+    }
+    if (index + rows < cells.length - 1) {
+        neighbors.add(cells[index + rows])
+    }
+    if (index + rows + 1< cells.length - 1) {
+        neighbors.add(cells[index + rows + 1])
+    }
+
+    prepare alive as []
+    loop i through (0, neighbors.length) {
+        if (neighbors[i].live) {
+            alive.add(neighbors[i])
+        }
+    }
+    finished alive
+}
+
+sketch painting {
+    loop i thorugh (0, cells.length) {
+        prepare cell as cells[i]
+        prepare neighbors as getNeighbors(cells, i)
+        if (cell.live) {
+            if (neighbors.length < 2 || neighbors.length > 3) {
+                prepare cell.live as false
+            } elif (!cell.live && neighbors.length == 3) {
+                prepare cell.live as true
+            }
+        } else {
+            if (neighbors.length == 3) {
+                prepare cell.live as true
+            }
+        }
+
+        if (cell.live) {
+            prepare color as prep Color(r: 255, g: 0, b: 0)
+            Canvase.fill(cell.x, cell.y, color)
+        } else {
+            Canvas.erase(cell.x, cell.y)
+        }
+    }
+}
+
+painting()
+
