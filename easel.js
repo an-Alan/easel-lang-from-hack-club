@@ -3,7 +3,7 @@ import { Interpreter  } from './interpreter.js'
 import stdlib, { EaselError } from './stdlib.js'
 import { Lexer } from './lexer.js'
 import { Parser } from './parser.js'
-
+import readline from 'node:readline'
 
 const readFile = location =>
     new Promise((resolve, reject) =>
@@ -57,6 +57,56 @@ const writeFile = (location, data) =>
         }
 
     } else{
+        const interpreter = new Interpreter()
+        let scope = {
+            ...stdlib,
+            exit: () => process.exit(0)
+        }
+
+        const input = readline.createInterface({
+            input: process.stdin,
+            output: process.stdout
+        })
+
+        process.on('SIGINT', () => {
+            input.close()
+        })
+
+        const repl = line => {
+            let hadError = false
+
+            const lexer = new Lexer(line)
+            try {
+                lexer.scanTokens()
+            } catch (err) {
+                if (err instanceof EaselError) {
+                    hadError = true
+                    console.log(err.toString())
+                } else throw err
+            }
+
+            if (!hadError) {
+                const parser = new Parser(lexer.tokens)
+                try {
+                    parser.parse()
+                } catch(err) {
+                    if (err instanceof EaselError) console.log(err.toString())
+                    else throw err
+                }
+
+                try {
+                    scope = interpreter.run(parser.ast, scope)
+                } catch (err) {
+                    if (err instanceof EaselError) console.log(err.toString())
+                    else throw err
+                }
+            }
+            input.question('> ', repl)
+        }
+
+        input.question('> ', repl)
+
+
     }
 })()
 

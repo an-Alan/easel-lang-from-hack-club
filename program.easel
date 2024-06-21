@@ -58,7 +58,7 @@ sketch getNeighbors needs (cells, index) {
 }
 
 sketch painting {
-    loop i thorugh (0, cells.length) {
+    loop i through (0, cells.length) {
         prepare cell as cells[i]
         prepare neighbors as getNeighbors(cells, i)
         if (cell.live) {
@@ -75,7 +75,7 @@ sketch painting {
 
         if (cell.live) {
             prepare color as prep Color(r: 255, g: 0, b: 0)
-            Canvase.fill(cell.x, cell.y, color)
+            Canvas.fill(cell.x, cell.y, color)
         } else {
             Canvas.erase(cell.x, cell.y)
         }
@@ -83,4 +83,3 @@ sketch painting {
 }
 
 painting()
-

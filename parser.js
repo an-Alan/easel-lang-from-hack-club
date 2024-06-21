@@ -43,7 +43,7 @@ export class Parser{
 
     error (token, msg) {
         throw new EaselError(
-            'Syntax error on ${token.line}:${token.column}: ${msg}'
+            'Syntax error on ' + (token.line) +':' + (token.column) + ':' + msg
         )
     }
 
@@ -61,7 +61,7 @@ export class Parser{
         if (this.peekType() == type) return this.tokens[this.current++]
         this.error(
             this.peek(),
-            'Expected ${type} but got ${this.peekType().toString()}'
+            'Expected ' + type + ' but got ' + this.peekType().toString()
         )
     }
     
@@ -85,12 +85,12 @@ export class Parser{
         if (this.peekType() != TOKENS.Keyword)
             this.error(
                 this.peek(),
-                'Expected ${TOKENS.Keyword} but got ${this.peekType()}'
+                'Expected ' + TOKENS.Keyword +' but got ' + this.peekType()
         )
         else if (this.peek().value != keyword)
             this.error(
                 this.peek(),
-                'Expected keyword ${keyword} but got keyword ${this.peek().value}'
+                'Expected keyword ' + keyword + ' but got keyword ' + this.peek().value
         )
         return this.eat(TOKENS.Keyword)
     }
@@ -304,7 +304,7 @@ export class Parser{
             const name = this.eat(TOKENS.Identifier).value
             this.eatKeyword('has')
             this.eat(TOKENS.LeftBrace)
-            const memebers = this.identifierList()
+            const members = this.identifierList()
             this.eat(TOKENS.RightBrace)
             return new Ast.Struct(name, members)
         }
