@@ -1,9 +1,23 @@
 import fs from 'fs'
 import { Interpreter  } from './interpreter.js'
-import stdlib, { EaselError } from './stdlib.js'
+import stdlib, { Canvas, EaselError } from './stdlib.js'
 import { Lexer } from './lexer.js'
 import { Parser } from './parser.js'
 import readline from 'node:readline'
+
+
+class CustomCanvas extends Canvas {
+    draw() {
+      console.log(this.rows, this.cols)
+      for (let row = 0; row < this.rows; row++) {
+        for (let col = 0; col < this.cols; col++) {
+          let cell = this.grid[row * this.cols + col]
+          process.stdout.write(`\x1b[48;2;${cell.r};${cell.g};${cell.b}m `)
+        }
+        process.stdout.write('\n')
+      }
+    }
+  }
 
 const readFile = location =>
     new Promise((resolve, reject) =>

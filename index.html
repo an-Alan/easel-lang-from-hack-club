@@ -118,7 +118,8 @@
                             clearInterval(interval)
                         }
                     }, 100)
-                }).catch(err => console.log(err))
+                })
+                .catch(err => console.log(err))
 
                 window.addEventListener('resize', resize)
             }
