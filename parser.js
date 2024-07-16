@@ -139,7 +139,7 @@ export class Parser{
                 this.eat(TOKENS.RightBracket)
                 return new Ast.Array(items)
             }
-            case TOKENS.Identifier: {
+            case TOKENS.Identifier: { 
                 return new Ast.Var(token.value)
             }
             case TOKENS.LeftParen: {

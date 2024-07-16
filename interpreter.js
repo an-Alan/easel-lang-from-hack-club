@@ -21,11 +21,6 @@ export class Interpreter {
         throw new EaselError('Runtime error: ' + msg)
     }
 
-    run(ast, scope) {
-        for (const node of ast) scope = this.execute(node, scope)
-        return scope
-    }
-
     inScope(scope, name) {
         return Object.keys(scope).includes(name)
     }
@@ -142,12 +137,13 @@ export class Interpreter {
                 break
             }
             case Ast.For: {
-                let localScope = { ...scope, [node.id]: this.evaluate(node.range[0]) }
+                let localScope = { ...scope, [node.id]: this.evaluate(node.range[0], scope) }
                 while (localScope[node.id] < this.evaluate(node.range[1], scope)){
                     this.run(node.body, localScope)
                     localScope[node.id]++
+                    console.log(localScope)
                 }
-                break
+                return localScope
             }
             case Ast.Conditional: {
                 if (this.evaluate(node.condition, scope)) this.run(node.body, scope)
@@ -158,6 +154,13 @@ export class Interpreter {
             }
             default:
                 this.evaluate(node, scope)
+        }
+        return scope
+    }
+
+    run(ast, scope) {
+        for (const node of ast) {
+            scope = this.execute(node, scope)
         }
         return scope
     }
